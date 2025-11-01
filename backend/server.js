@@ -4,7 +4,8 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { connectDB } from "./config/db.js";
 import userRouter from "./routes/userRoutes.js";
-
+import complaintRoutes from './routes/complaintRoutes.js';
+import path from 'path';
 
 dotenv.config();
 
@@ -24,11 +25,16 @@ app.use(
   })
 );
 
+
+
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use("/api/auth", userRouter);
+app.use('/api/complaints', complaintRoutes);
+
 // 🧭 Routes
 app.get("/", (req, res) => {
   res.send("🚀 Server is running successfully!");
 });
-app.use("/api/auth", userRouter);
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port: ${PORT}`);

@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
+import AddComplaint from "./pages/AddComplaint";
+import MyComplaints from "./pages/MyComplaints";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -14,6 +16,8 @@ export default function App() {
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+              <Route path="/add-complaint" element={<AddComplaint />} />
+        <Route path="/my-complaints" element={<MyComplaints />} />
           </Routes>
         </div>
       </div>
