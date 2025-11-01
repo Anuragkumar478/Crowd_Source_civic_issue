@@ -4,7 +4,7 @@ import {
   getAllComplaints,
   updateComplaintadminStatus,
 } from "../controllers/adminController.js";
-import { protect } from "../middleware/auth.js";
+import { protect,adminOnly } from "../middleware/auth.js";
 
 const router = express.Router();
 

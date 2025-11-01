@@ -1,27 +1,30 @@
 import { useState } from "react";
 import api from "../api";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // ✅ import context
 
 export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // ✅ use login() from context
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const { data } = await api.post("/auth/login", form);
 
-      // ✅ Save user info in localStorage
+      // ✅ Update AuthContext immediately
+      login(data.user);
+
+      // ✅ (Optional) store in localStorage (useful for refresh persistence)
       localStorage.setItem("user", JSON.stringify(data.user));
 
       setMsg(data.message);
 
-      // ✅ Redirect based on role
-      setTimeout(() => {
-        if (data.user.role === "admin") navigate("/admin/dashboard");
-        else navigate("/profile");
-      }, 1000);
+      // ✅ Redirect instantly based on role
+      if (data.user.role === "admin") navigate("/admin-dashboard");
+      else navigate("/profile");
     } catch (err) {
       setMsg(err.response?.data?.message || "Login failed");
     }

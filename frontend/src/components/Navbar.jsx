@@ -1,34 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import api from "../api";
+import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null);
-  const [userName, setUserName] = useState("");
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await api.get("/auth/profile");
-        setIsLoggedIn(true);
-        setUserRole(res.data.role);
-        setUserName(res.data.name);
-      } catch {
-        setIsLoggedIn(false);
-        setUserRole(null);
-        setUserName("");
-      }
-    };
-    checkAuth();
-  }, []);
+  const { user, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await api.post("/auth/logout");
-      setIsLoggedIn(false);
-      setUserRole(null);
+      await logout();
       navigate("/login");
     } catch (err) {
       console.error("Logout failed:", err);
@@ -53,7 +32,8 @@ export default function Navbar() {
             Home
           </Link>
 
-          {!isLoggedIn && (
+          {/* IF NOT LOGGED IN */}
+          {!user && (
             <>
               <Link to="/login" className="hover:underline">
                 Login
@@ -64,7 +44,8 @@ export default function Navbar() {
             </>
           )}
 
-          {isLoggedIn && userRole === "user" && (
+          {/* IF USER IS LOGGED IN AND ROLE = USER */}
+          {user && user.role === "user" && (
             <>
               <Link to="/add-complaint" className="hover:underline">
                 Add Complaint
@@ -75,7 +56,8 @@ export default function Navbar() {
             </>
           )}
 
-          {isLoggedIn && userRole === "admin" && (
+          {/* IF USER IS ADMIN */}
+          {user && user.role === "admin" && (
             <>
               <Link to="/admin-dashboard" className="hover:underline">
                 Dashboard
@@ -95,13 +77,10 @@ export default function Navbar() {
       </div>
 
       {/* RIGHT SIDE: PROFILE + LOGOUT */}
-      {isLoggedIn && (
+      {user && (
         <div className="flex items-center gap-4">
-          <Link
-            to="/profile"
-            className="flex items-center gap-2 hover:underline"
-          >
-            <span className="font-semibold">{userName || "Profile"}</span>
+          <Link to="/profile" className="flex items-center gap-2 hover:underline">
+            <span className="font-semibold">{user.name || "Profile"}</span>
             <img
               src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
               alt="Profile"

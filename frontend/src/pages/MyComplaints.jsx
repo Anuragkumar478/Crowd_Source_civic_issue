@@ -12,7 +12,7 @@ const MyComplaints = () => {
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
-        const { data } = await api.get("/mycomplaints");
+        const { data } = await api.get("/complaints/my");
         setComplaints(data);
       } catch (err) {
         setError("Failed to load complaints");
