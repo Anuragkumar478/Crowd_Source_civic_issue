@@ -11,8 +11,17 @@ export default function Login() {
     e.preventDefault();
     try {
       const { data } = await api.post("/auth/login", form);
+
+      // ✅ Save user info in localStorage
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       setMsg(data.message);
-      setTimeout(() => navigate("/profile"), 1000);
+
+      // ✅ Redirect based on role
+      setTimeout(() => {
+        if (data.user.role === "admin") navigate("/admin/dashboard");
+        else navigate("/profile");
+      }, 1000);
     } catch (err) {
       setMsg(err.response?.data?.message || "Login failed");
     }

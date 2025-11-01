@@ -1,47 +1,120 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../api";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [userName, setUserName] = useState("");
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await api.get("/auth/profile");
+        setIsLoggedIn(true);
+        setUserRole(res.data.role);
+        setUserName(res.data.name);
+      } catch {
+        setIsLoggedIn(false);
+        setUserRole(null);
+        setUserName("");
+      }
+    };
+    checkAuth();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+      setIsLoggedIn(false);
+      setUserRole(null);
+      navigate("/login");
+    } catch (err) {
+      console.error("Logout failed:", err);
+    }
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 flex justify-center flex-wrap gap-6">
-      {/* Always visible */}
-      <Link to="/" className="hover:underline">
-        Login
-      </Link>
-      <Link to="/register" className="hover:underline">
-        Register
-      </Link>
-      <Link to="/profile" className="hover:underline">
-        Profile
-      </Link>
-
-      {/* Show complaint options only if logged in */}
-      {token && (
-        <>
-          <Link to="/add-complaint" className="hover:underline">
-            Add Complaint
-          </Link>
-          <Link to="/my-complaints" className="hover:underline">
-            My Complaints
-          </Link>
-        </>
-      )}
-
-      {/* Logout button */}
-      {token && (
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm"
+    <nav className="bg-[#2A7B9B] text-white px-8 py-3 flex items-center justify-between shadow-md">
+      {/* LEFT SIDE: BRAND + LINKS */}
+      <div className="flex items-center gap-8 flex-wrap">
+        {/* 🌆 Brand Name */}
+        <Link
+          to="/"
+          className="text-2xl font-extrabold tracking-wide text-white hover:text-yellow-300 transition duration-300"
         >
-          Logout
-        </button>
+          DevelopMyCity
+        </Link>
+
+        {/* Navigation Links */}
+        <div className="flex items-center gap-6 flex-wrap text-[15px] px-[50px]">
+          <Link to="/" className="hover:underline font-semibold">
+            Home
+          </Link>
+
+          {!isLoggedIn && (
+            <>
+              <Link to="/login" className="hover:underline">
+                Login
+              </Link>
+              <Link to="/register" className="hover:underline">
+                Register
+              </Link>
+            </>
+          )}
+
+          {isLoggedIn && userRole === "user" && (
+            <>
+              <Link to="/add-complaint" className="hover:underline">
+                Add Complaint
+              </Link>
+              <Link to="/my-complaints" className="hover:underline">
+                My Complaints
+              </Link>
+            </>
+          )}
+
+          {isLoggedIn && userRole === "admin" && (
+            <>
+              <Link to="/admin-dashboard" className="hover:underline">
+                Dashboard
+              </Link>
+              <Link to="/all-complaints" className="hover:underline">
+                All Complaints
+              </Link>
+              <Link to="/track-progress" className="hover:underline">
+                Track Progress
+              </Link>
+              <Link to="/admin-analytics" className="hover:underline">
+                Analytics
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* RIGHT SIDE: PROFILE + LOGOUT */}
+      {isLoggedIn && (
+        <div className="flex items-center gap-4">
+          <Link
+            to="/profile"
+            className="flex items-center gap-2 hover:underline"
+          >
+            <span className="font-semibold">{userName || "Profile"}</span>
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+              alt="Profile"
+              className="w-8 h-8 rounded-full border-2 border-white"
+            />
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-sm"
+          >
+            Logout
+          </button>
+        </div>
       )}
     </nav>
   );

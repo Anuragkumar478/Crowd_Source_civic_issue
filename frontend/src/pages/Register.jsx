@@ -3,7 +3,7 @@ import api from "../api";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", role: "user" });
   const [msg, setMsg] = useState("");
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ export default function Register() {
     try {
       const { data } = await api.post("/auth/register", form);
       setMsg(data.message);
-      setTimeout(() => navigate("/"), 1200);
+      setTimeout(() => navigate("/login"), 1200);
     } catch (err) {
       setMsg(err.response?.data?.message || "Something went wrong");
     }
@@ -46,6 +46,17 @@ export default function Register() {
           className="w-full border p-2 rounded"
           required
         />
+
+        {/* ✅ Role Selector (for testing or seeding admin) */}
+        <select
+          value={form.role}
+          onChange={(e) => setForm({ ...form, role: e.target.value })}
+          className="w-full border p-2 rounded"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"

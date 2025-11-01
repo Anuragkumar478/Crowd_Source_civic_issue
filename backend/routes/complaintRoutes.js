@@ -1,4 +1,3 @@
-// routes/complaintRoutes.js
 import express from 'express';
 import multer from 'multer';
 import path from 'path';
@@ -7,13 +6,14 @@ import {
   getAllComplaints,
   getMyComplaints,
   updateComplaintStatus,
-  deleteComplaint
+  deleteComplaint,
+  toggleUpvote
 } from '../controllers/complaintController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// ✅ Setup Multer for image uploads
+// ✅ Multer setup for image uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads/');
@@ -25,11 +25,12 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// Routes
+// ✅ Routes
 router.post('/', protect, upload.single('image'), createComplaint);
 router.get('/', protect, getAllComplaints);
 router.get('/my', protect, getMyComplaints);
 router.put('/:id', protect, updateComplaintStatus);
 router.delete('/:id', protect, deleteComplaint);
+router.put('/:id/upvote', protect, toggleUpvote);
 
 export default router;
