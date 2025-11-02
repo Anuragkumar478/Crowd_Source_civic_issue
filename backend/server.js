@@ -25,7 +25,10 @@ const server = createServer(app);
 // ✅ Setup Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: [
+      "http://localhost:5173",
+      "https://crowdsource-frontend-4f6ha2s7r-anurag-kumars-projects-4fdb0a50.vercel.app"
+    ],
     credentials: true,
   },
 });
@@ -34,9 +37,11 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cookieParser());
 app.use(
-  // we can use in place of this "http://localhost:5173", "http://localhost:5174"="https://your-frontend.vercel.app"
   cors({
-    origin: ["https://your-frontend.vercel.app"],
+    origin: [
+      "http://localhost:5173", // for local testing
+      "https://crowdsource-frontend-4f6ha2s7r-anurag-kumars-projects-4fdb0a50.vercel.app" // your deployed frontend
+    ],
     credentials: true,
   })
 );
