@@ -34,8 +34,9 @@ const io = new Server(server, {
 app.use(express.json());
 app.use(cookieParser());
 app.use(
+  // we can use in place of this "http://localhost:5173", "http://localhost:5174"="https://your-frontend.vercel.app"
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: ["https://your-frontend.vercel.app"],
     credentials: true,
   })
 );
