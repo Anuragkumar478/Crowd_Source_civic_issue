@@ -26,7 +26,7 @@ const server = createServer(app);
 // ✅ Setup Socket.IO (LOCAL ONLY)
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"], // frontend running locally
+    origin: ["https://crowd-source-civic-issue-jtso.vercel.app/"], // frontend running locally
     credentials: true,
   },
 });
@@ -36,7 +36,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // your Vite frontend
+    origin: ["https://crowd-source-civic-issue-jtso.vercel.app/"], // your Vite frontend
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
