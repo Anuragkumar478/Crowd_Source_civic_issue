@@ -4,25 +4,26 @@ import { BarChart3, Users, MapPin, ThumbsUp, AlertCircle } from "lucide-react";
 
 export default function Home() {
   return (
-    <div className="bg-gray-50 min-h-screen text-gray-800">
+    <div className="bg-gradient-to-br from-slate-800 via-slate-900 to-black min-h-screen text-gray-100 overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-gray-600 to-pink-700 text-white py-20 px-6 text-center">
+      <section className="relative text-center py-24 px-6 bg-gradient-to-r from-violet-700/30 to-cyan-600/20 backdrop-blur-sm">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl md:text-6xl font-extrabold mb-4"
+          className="text-5xl md:text-6xl font-extrabold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400 drop-shadow-lg"
         >
-          DevlopMyCity 🚧
+          DevelopMyCity 🚧
         </motion.h1>
+
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-lg md:text-xl max-w-2xl mx-auto mb-6"
+          className="text-lg md:text-xl max-w-2xl mx-auto mb-8 text-gray-300"
         >
-          Empower citizens to report, validate, and track issues in their area.  
-          Together, let’s make our city cleaner, smarter, and better!
+          Empower citizens to report, validate, and track issues in their city.  
+          Together, let’s build cleaner, smarter, and more connected cities!
         </motion.p>
 
         <motion.div
@@ -32,116 +33,146 @@ export default function Home() {
         >
           <Link
             to="/add-complaint"
-            className="bg-gray-500 text-blue-700 font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-gray-100 transition"
+            className="bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-105 hover:shadow-cyan-500/30 transition-all"
           >
             Report an Issue
           </Link>
         </motion.div>
+
+        {/* Decorative Glow */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40 pointer-events-none"></div>
       </section>
 
       {/* Features Section */}
-      <section className="py-16 px-6 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-10">
+      <section className="py-20 px-6 max-w-7xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-14 text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">
           🌟 Key Features
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Card 1 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <AlertCircle className="mx-auto text-blue-600 w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Easy Issue Reporting</h3>
-            <p className="text-gray-600">
-              Quickly report local problems like potholes, streetlight failures, 
-              or garbage with photos and location.
-            </p>
-          </motion.div>
-
-          {/* Card 2 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <ThumbsUp className="mx-auto text-green-600 w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Crowd Validation</h3>
-            <p className="text-gray-600">
-              Other users can upvote or confirm an issue to increase its visibility and urgency.
-            </p>
-          </motion.div>
-
-          {/* Card 3 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <MapPin className="mx-auto text-red-600 w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Live Location Tracking</h3>
-            <p className="text-gray-600">
-              Every complaint is mapped precisely so authorities can locate and address it faster.
-            </p>
-          </motion.div>
-
-          {/* Card 4 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <BarChart3 className="mx-auto text-purple-600 w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Data Analytics</h3>
-            <p className="text-gray-600">
-              View trends of most reported issues and hotspot areas through interactive visualizations.
-            </p>
-          </motion.div>
-
-          {/* Card 5 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <Users className="mx-auto text-yellow-600 w-12 h-12 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Community Driven</h3>
-            <p className="text-gray-600">
-              Collaborate with neighbors and local authorities to solve issues faster as a community.
-            </p>
-          </motion.div>
-
-          {/* Card 6 */}
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="bg-white rounded-xl shadow-md p-6 text-center"
-          >
-            <img
-              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              alt="Admin"
-              className="mx-auto w-12 h-12 mb-4"
-            />
-            <h3 className="text-xl font-semibold mb-2">Admin Dashboard</h3>
-            <p className="text-gray-600">
-              Admins can verify, assign, and track complaint progress from a central dashboard.
-            </p>
-          </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+          {[
+            {
+              icon: <AlertCircle className="mx-auto text-cyan-400 w-12 h-12 mb-4" />,
+              title: "Easy Issue Reporting",
+              text: "Quickly report civic issues like potholes, garbage, or broken streetlights with location and photos.",
+            },
+            {
+              icon: <ThumbsUp className="mx-auto text-green-400 w-12 h-12 mb-4" />,
+              title: "Crowd Validation",
+              text: "Citizens can upvote or confirm issues to prioritize problems that matter most to the community.",
+            },
+            {
+              icon: <MapPin className="mx-auto text-red-400 w-12 h-12 mb-4" />,
+              title: "Live Location Tracking",
+              text: "Complaints are mapped accurately to help authorities act quickly and monitor hotspots.",
+            },
+            {
+              icon: <BarChart3 className="mx-auto text-purple-400 w-12 h-12 mb-4" />,
+              title: "Smart Analytics",
+              text: "View trends, track performance, and monitor recurring issues with a data-driven dashboard.",
+            },
+            {
+              icon: <Users className="mx-auto text-yellow-400 w-12 h-12 mb-4" />,
+              title: "Community Collaboration",
+              text: "Unite citizens, officers, and district admins to solve local issues through collaboration.",
+            },
+            {
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                  alt="Admin"
+                  className="mx-auto w-12 h-12 mb-4"
+                />
+              ),
+              title: "Admin Dashboard",
+              text: "Admins verify, assign, and track complaint progress efficiently from a single dashboard.",
+            },
+          ].map((f, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.05, y: -5 }}
+              className="bg-slate-800/60 backdrop-blur-lg rounded-2xl shadow-xl p-6 text-center border border-slate-700 hover:border-cyan-400/40 transition-all"
+            >
+              {f.icon}
+              <h3 className="text-xl font-semibold mb-2 text-gray-100">{f.title}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{f.text}</p>
+            </motion.div>
+          ))}
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="text-center py-16 bg-gray-600 text-white">
-        <h2 className="text-3xl font-bold mb-4">Ready to make a difference?</h2>
-        <p className="max-w-xl mx-auto mb-6">
-          Start reporting issues in your area today and help make your city a better place to live.
+      {/* CTA Section */}
+      <section className="text-center py-20 bg-gradient-to-r from-violet-700/30 to-cyan-600/20 text-white backdrop-blur-sm">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Make a Difference?</h2>
+        <p className="max-w-xl mx-auto mb-6 text-gray-300">
+          Start reporting issues in your area and be part of the change your city needs.
         </p>
         <Link
           to="/track-progress"
-          className="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-full shadow-lg hover:bg-gray-100 transition"
+          className="bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg hover:scale-105 transition-all"
         >
           View All Complaints
         </Link>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 bg-gray-900 text-gray-300 text-center">
-        <p>© {new Date().getFullYear()} FixMyCity. All Rights Reserved.</p>
+      <footer className="bg-slate-950 text-gray-400 py-12 px-6 border-t border-slate-800">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div>
+            <h2 className="text-2xl font-bold text-cyan-400 mb-3">DevelopMyCity</h2>
+            <p className="text-sm leading-relaxed text-gray-400">
+              A citizen-first platform bridging communication between people and authorities.
+            </p>
+          </div>
+
+          {/* Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-200 mb-3">Quick Links</h3>
+            <ul className="space-y-2 text-sm">
+              {["add-complaint", "track-progress", "login", "register"].map((item) => (
+                <li key={item}>
+                  <a href={`/${item.toLowerCase()}`} className="hover:text-cyan-400 transition">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Roles */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-200 mb-3">Roles</h3>
+            <ul className="space-y-2 text-sm">
+              {[" Admin", "Citizen"].map((role) => (
+                <li key={role}>
+                  <a href="#" className="hover:text-cyan-400 transition">
+                    {role}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-200 mb-3">Contact</h3>
+            <p className="text-sm text-gray-400">📍 Lucknow, Uttar Pradesh</p>
+            <p className="text-sm text-gray-400">📧 developmycity@gmail.com</p>
+            <div className="flex space-x-4 mt-4 text-xl">
+              <a href="#" className="hover:text-cyan-400 transition"><i className="fab fa-facebook"></i></a>
+              <a href="#" className="hover:text-cyan-400 transition"><i className="fab fa-twitter"></i></a>
+              <a href="#" className="hover:text-cyan-400 transition"><i className="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 border-t border-slate-800 pt-4 text-center text-sm text-gray-500">
+          <p>
+            © communication between people and authorities {new Date().getFullYear()} <span className="text-cyan-400 font-semibold">DevelopMyCity</span> —: 
+            <span className="text-cyan-400"> DevlopemMycity</span>
+          </p>
+        </div>
       </footer>
     </div>
   );

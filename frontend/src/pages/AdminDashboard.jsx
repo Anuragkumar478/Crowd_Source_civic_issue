@@ -56,7 +56,7 @@ export default function AdminDashboard() {
       description: "All complaints"
     },
     {
-      title: "Pending",
+      title: "Pending(new)",
       value: stats.pendingComplaints,
       color: "from-yellow-500 to-yellow-600",
       icon: "⏳",

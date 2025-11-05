@@ -19,16 +19,14 @@ const PORT = process.env.PORT || 5000;
 // 🧠 Connect to Database
 await connectDB();
 
+
 // ✅ Create HTTP server for Socket.IO
 const server = createServer(app);
 
-// ✅ Setup Socket.IO
+// ✅ Setup Socket.IO (LOCAL ONLY)
 const io = new Server(server, {
   cors: {
-    origin: [
-      "http://localhost:5173",
-      "https://crowdsource-frontend-4f6ha2s7r-anurag-kumars-projects-4fdb0a50.vercel.app"
-    ],
+    origin: ["http://localhost:5173"], // frontend running locally
     credentials: true,
   },
 });
@@ -38,10 +36,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // for local testing
-      "https://crowdsource-frontend-4f6ha2s7r-anurag-kumars-projects-4fdb0a50.vercel.app" // your deployed frontend
-    ],
+    origin: ["http://localhost:5173"], // your Vite frontend
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
@@ -58,7 +55,7 @@ app.use("/api/analytics", adminAnalyticsRoutes);
 
 // 🧭 Default route
 app.get("/", (req, res) => {
-  res.send("🚀 Server is running successfully!");
+  res.send("🚀 Server is running successfully (LOCAL MODE)!");
 });
 
 // 🟢 Socket.io connection listener
@@ -72,5 +69,5 @@ io.on("connection", (socket) => {
 
 // ✅ Use `server.listen` instead of `app.listen`
 server.listen(PORT, () => {
-  console.log(`✅ Server running on port: ${PORT}`);
+  console.log(`✅ Server running locally on port: ${PORT}`);
 });

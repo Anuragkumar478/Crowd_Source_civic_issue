@@ -6,9 +6,9 @@ export const getAdminDashboard = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments({ role: "user" });
     const totalComplaints = await Complaint.countDocuments();
-    const resolvedComplaints = await Complaint.countDocuments({ status: "resolved" });
-    const pendingComplaints = await Complaint.countDocuments({ status: "pending" });
-     const inProgressComplaints = await Complaint.countDocuments({ status: "in progress" }); // 🟢 add this line
+    const resolvedComplaints = await Complaint.countDocuments({ status: "Resolved" });
+    const pendingComplaints = await Complaint.countDocuments({ status: "New" });
+     const inProgressComplaints = await Complaint.countDocuments({ status: "In Progress" }); // 🟢 add this line
 
     res.status(200).json({
       totalUsers,
