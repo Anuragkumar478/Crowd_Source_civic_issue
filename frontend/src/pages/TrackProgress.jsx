@@ -3,7 +3,9 @@ import io from "socket.io-client";
 import api from "../api";
 import ComplaintCard from "../components/ComplaintCard";
 
-const socket = io("https://crowd-source-civic-issue.onrender.com"); // connect to backend
+const socket = io("https://crowd-source-civic-issue.onrender.com", {
+  transports: ["websocket"], // important for Render
+}); // connect to backend
 
 export default function TrackProgress() {
   const [complaints, setComplaints] = useState([]);

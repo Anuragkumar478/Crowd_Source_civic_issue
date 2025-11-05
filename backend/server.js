@@ -19,35 +19,43 @@ const PORT = process.env.PORT || 5000;
 // 🧠 Connect to Database
 await connectDB();
 
-
 // ✅ Create HTTP server for Socket.IO
 const server = createServer(app);
 
-// ✅ Setup Socket.IO (LOCAL ONLY)
-const io = new Server(server, {
-  cors: {
-    origin: ["https://crowd-source-civic-issue-jtso.vercel.app/"], // frontend running locally
-    credentials: true,
-  },
-});
+// 🧩 Fix 1: Update CORS to include both localhost + Render frontend
+const allowedOrigins = [
+  "https://crowd-source-civic-issue.onrender.com", // your Render backend URL (for internal ping)
+  "https://crowd-source-civic-issue-frontend.onrender.com", // your Render frontend domain
+  "http://localhost:5173", // for local testing
+];
 
-// 🔧 Middlewares
-app.use(express.json());
-app.use(cookieParser());
 app.use(
   cors({
-    origin: ["https://crowd-source-civic-issue-jtso.vercel.app/"], // your Vite frontend
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
 
+// ✅ Socket.IO CORS
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
 // ✅ Store io globally (to emit from routes)
 app.set("io", io);
 
-// ✅ Static files and routes
+// ✅ Middleware
+app.use(express.json());
+app.use(cookieParser());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+// ✅ Routes
 app.use("/api/auth", userRouter);
 app.use("/api/complaints", complaintRoutes);
 app.use("/api/admin", adminRoutes);
@@ -55,7 +63,7 @@ app.use("/api/analytics", adminAnalyticsRoutes);
 
 // 🧭 Default route
 app.get("/", (req, res) => {
-  res.send("🚀 Server is running successfully (LOCAL MODE)!");
+  res.send("🚀 Crowd Source Civic Issue backend is live on Render!");
 });
 
 // 🟢 Socket.io connection listener
@@ -67,7 +75,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Use `server.listen` instead of `app.listen`
+// ✅ Start Server
 server.listen(PORT, () => {
-  console.log(`✅ Server running locally on port: ${PORT}`);
+  console.log(`✅ Server running on port: ${PORT}`);
 });
