@@ -79,12 +79,12 @@ export default function AddComplaint() {
       });
       if (image) formData.append("image", image);
 
-      const { data } = await api.post("/complaints", formData, {
+      const { data } = await api.post("/complaints/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       setMessage(data.message);
-      setTimeout(() => navigate("/my-complaints"), 1000);
+      setTimeout(() => navigate("/complaints/my"), 1000);
     } catch (error) {
       setMessage(error.response?.data?.message || "Failed to submit complaint.");
     }

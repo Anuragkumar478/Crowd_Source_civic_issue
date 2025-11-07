@@ -29,7 +29,6 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -41,26 +40,27 @@ export const loginUser = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res
-      .cookie("token", token, {
-        httpOnly: true,
-        secure: true, // set true if using https
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      })
-      .json({
-        message: "Login successful",
-        user: {
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-      });
+    const isProduction = process.env.NODE_ENV === "production";
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      message: "Login successful",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
 // 🔹 Profile
 export const getProfile = async (req, res) => {
   try {
@@ -73,11 +73,13 @@ export const getProfile = async (req, res) => {
 
 // 🔹 Logout
 export const logoutUser = async (req, res) => {
-  res
-    .clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-    })
-    .json({ message: "Logged out successfully" });
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
+  });
+
+  res.json({ message: "Logged out successfully" });
 };
