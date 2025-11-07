@@ -5,14 +5,16 @@ import fs from 'fs';
 // 🟢 Create Complaint
 export const createComplaint = async (req, res) => {
   try {
+    
     const { city, state, address, category, latitude, longitude } = req.body;
-
+    
     // ✅ Validation
     if (!city || !state || !address || !category) {
       return res.status(400).json({ message: 'All fields are required.' });
     }
 
     let imageUrl = '';
+    
 if (req.file) {
   const baseUrl = `${req.protocol}://${req.get('host')}`;
   imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
@@ -21,6 +23,7 @@ if (req.file) {
     // ✅ Create Complaint
     const complaint = await Complaint.create({
       user: req.user._id,
+      
       city,
       state,
       address,
@@ -31,6 +34,7 @@ if (req.file) {
         longitude: longitude ? parseFloat(longitude) : undefined,
       },
     });
+    
 
      const io = req.app.get("io");
     io.emit("complaintCreated", complaint); // ✅ Realtime update

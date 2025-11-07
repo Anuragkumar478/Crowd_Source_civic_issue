@@ -22,21 +22,27 @@ await connectDB();
 // ✅ Create HTTP server for Socket.IO
 const server = createServer(app);
 
-// 🧩 Fix 1: Update CORS to include both localhost + Render frontend
 const allowedOrigins = [
-  "https://crowd-source-civic-issue.onrender.com", // your Render backend URL (for internal ping)
-  "https://crowd-source-civic-issue-frontend.onrender.com", // your Render frontend domain
-  "http://localhost:5173", // for local testing
+  "https://crowd-source-civic-i-git-baed32-anurag-kumars-projects-4fdb0a50.vercel.app", // ✅ Your Vercel frontend
+  "https://crowd-source-civic-issue-frontend.onrender.com", // Render frontend (if any)
+  "http://localhost:5173", // local dev
 ];
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
 
 // ✅ Socket.IO CORS
 const io = new Server(server, {
