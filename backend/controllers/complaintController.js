@@ -19,9 +19,10 @@ if (req.file) {
   const baseUrl = `${req.protocol}://${req.get('host')}`;
   imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
 }
-
+console.log('Request user:', req.user); 
     // ✅ Create Complaint
     const complaint = await Complaint.create({
+      
       user: req.user._id,
       
       city,
