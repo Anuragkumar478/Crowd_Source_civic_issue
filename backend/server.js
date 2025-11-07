@@ -10,6 +10,12 @@ import adminAnalyticsRoutes from "./routes/adminAnalytics.js";
 import path from "path";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { v2 as cloudinary } from 'cloudinary'
+cloudinary.config({ 
+  cloud_name: process.env.CLOUDINARY_NAME, 
+  api_key: process.env.CLOUDINARY_KEY, 
+  api_secret: process.env.CLOUDINARY_SECRET
+});
 
 dotenv.config();
 
@@ -59,7 +65,7 @@ app.set("io", io);
 // ✅ Middleware
 app.use(express.json());
 app.use(cookieParser());
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+//app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 // ✅ Routes
 app.use("/api/auth", userRouter);

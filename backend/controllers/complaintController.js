@@ -1,4 +1,7 @@
 import Complaint from '../models/Complaint.js';
+import { v2 as cloudinary } from "cloudinary";
+import streamifier from "streamifier";
+
 import path from 'path';
 import fs from 'fs';
 
@@ -15,38 +18,73 @@ export const createComplaint = async (req, res) => {
 
     let imageUrl = '';
     
-if (req.file) {
-  const baseUrl = `${req.protocol}://${req.get('host')}`;
-  imageUrl = `${baseUrl}/uploads/${req.file.filename}`;
-}
-console.log('Request user:', req.user); 
-    // ✅ Create Complaint
-    const complaint = await Complaint.create({
-      
-      user: req.user._id,
-      
-      city,
-      state,
-      address,
-      category,
-      imageUrl,
-      location: {
-        latitude: latitude ? parseFloat(latitude) : undefined,
-        longitude: longitude ? parseFloat(longitude) : undefined,
-      },
-    });
     
 
-     const io = req.app.get("io");
-    io.emit("complaintCreated", complaint); // ✅ Realtime update
+    // ✅ Upload image to Cloudinary if provided
+    if (req.file) {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: "crowd-source-complaints" },
+        async (error, result) => {
+          if (error) {
+            console.error("Cloudinary upload error:", error);
+            return res.status(500).json({ message: "Image upload failed." });
+          }
 
-    res.status(201).json({
-      message: 'Complaint submitted successfully.',
-      complaint,
-    });
+          imageUrl = result.secure_url;
+
+          // ✅ Create Complaint after successful upload
+          const complaint = await Complaint.create({
+            user: req.user._id,
+            city,
+            state,
+            address,
+            category,
+            imageUrl,
+            location: {
+              latitude: latitude ? parseFloat(latitude) : undefined,
+              longitude: longitude ? parseFloat(longitude) : undefined,
+            },
+          });
+
+          const io = req.app.get("io");
+          io.emit("complaintCreated", complaint); // ✅ Realtime update
+
+          return res.status(201).json({
+            message: "Complaint submitted successfully.",
+            complaint,
+          });
+        }
+      );
+
+      // ✅ Stream the file buffer to Cloudinary
+      streamifier.createReadStream(req.file.buffer).pipe(uploadStream);
+    } else {
+      // ✅ If no image, create complaint normally
+      const complaint = await Complaint.create({
+        user: req.user._id,
+        city,
+        state,
+        address,
+        category,
+        location: {
+          latitude: latitude ? parseFloat(latitude) : undefined,
+          longitude: longitude ? parseFloat(longitude) : undefined,
+        },
+      });
+
+      const io = req.app.get("io");
+      io.emit("complaintCreated", complaint);
+
+      return res.status(201).json({
+        message: "Complaint submitted successfully (no image).",
+        complaint,
+      });
+    }
   } catch (error) {
-    console.error('Error creating complaint:', error);
-    res.status(500).json({ message: 'Server error while creating complaint.' });
+    console.error("Error creating complaint:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while creating complaint." });
   }
 };
 
