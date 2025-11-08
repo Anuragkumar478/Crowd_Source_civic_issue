@@ -121,8 +121,8 @@ export default function AddComplaint() {
           <option value="Water">Water</option>
           <option value="Waste">Waste</option>
           <option value="Electricity">Electricity</option>
-          <option value="<Pollution">Pollution</option>
-          <option value="<Public Safety">Pollution</option>
+          <option value="Pollution">Pollution</option>
+          <option value="Public Saftey">Public Saftey</option>
           <option value="Other">Other</option>
         </select>
 
