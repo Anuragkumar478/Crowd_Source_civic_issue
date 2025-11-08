@@ -84,8 +84,9 @@ export default function AddComplaint() {
       });
 
       setMessage(data.message);
-      setTimeout(() => navigate("/complaints/my"), 1000);
+      setTimeout(() => navigate("/my-complaints"), 1000);
     } catch (error) {
+       console.log(error.response);
       setMessage(error.response?.data?.message || "Failed to submit complaint.");
     }
   };
@@ -93,7 +94,18 @@ export default function AddComplaint() {
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
       <h2 className="text-2xl font-semibold text-center mb-4">Submit Complaint</h2>
-      {message && <p className="text-center text-sm text-green-600 mb-3">{message}</p>}
+     {message && (
+  <p
+    className={`text-center text-sm mb-3 ${
+      message.toLowerCase().includes("failed") ||
+      message.toLowerCase().includes("error")
+        ? "text-red-600"
+        : "text-green-600"
+    }`}
+  >
+    {message}
+  </p>
+)}
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* 🟣 Category Selection */}
@@ -105,10 +117,12 @@ export default function AddComplaint() {
           required
         >
           <option value="">Select Category</option>
-          <option value="Road">Road Issue</option>
-          <option value="Water">Water Problem</option>
-          <option value="Waste">Waste Management</option>
+          <option value="Road">Road </option>
+          <option value="Water">Water</option>
+          <option value="Waste">Waste</option>
           <option value="Electricity">Electricity</option>
+          <option value="<Pollution">Pollution</option>
+          <option value="<Public Safety">Pollution</option>
           <option value="Other">Other</option>
         </select>
 

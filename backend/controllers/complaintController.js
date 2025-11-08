@@ -6,6 +6,8 @@ import path from 'path';
 import fs from 'fs';
 
 // 🟢 Create Complaint
+
+
 export const createComplaint = async (req, res) => {
   try {
     
@@ -31,6 +33,7 @@ export const createComplaint = async (req, res) => {
           }
 
           imageUrl = result.secure_url;
+         
 
           // ✅ Create Complaint after successful upload
           const complaint = await Complaint.create({
