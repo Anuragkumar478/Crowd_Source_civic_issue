@@ -11,6 +11,8 @@ import path from "path";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { v2 as cloudinary } from 'cloudinary'
+
+
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_NAME, 
   api_key: process.env.CLOUDINARY_KEY, 
@@ -33,6 +35,7 @@ const allowedOrigins = [
   "https://crowd-source-civic-issue-frontend.onrender.com", // Render frontend (if any)
   "http://localhost:5173", // local dev
 ];
+
 
 app.use(
   cors({
