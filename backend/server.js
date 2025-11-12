@@ -32,7 +32,8 @@ const server = createServer(app);
 
 const allowedOrigins = [
   "https://crowd-source-civic-i-git-baed32-anurag-kumars-projects-4fdb0a50.vercel.app", // ✅ Your Vercel frontend
-  "https://crowd-source-civic-issue-frontend.onrender.com", // Render frontend (if any)
+  "https://crowd-source-civic-issue-frontend.onrender.com",
+    "https://crowd-source-civic-issue-jtso.vercel.app",  // Render frontend (if any)
   "http://localhost:5173", // local dev
 ];
 
