@@ -3,6 +3,9 @@ node_modules
 dist
 build
 .env
+# Environment variables
+.env.*
+
 .env.local
 .DS_Store
 Thumbs.db
@@ -44,3 +47,11 @@ backend/temp
 
 # --- OS-specific ---
 *.local
+
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/

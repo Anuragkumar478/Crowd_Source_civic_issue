@@ -21,20 +21,44 @@ const complaintSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+   description: {
+      type:String,
+      required: true,
+    trim: true
+   },
 
   // 🏷️ Category tagging
   category: {
     type: String,
     enum: [
-      'Road',
-      'Water',
-      'Waste',
-      'Electricity',
-      'Pollution',
-      'Public Safety',
-      'Other',
-    ],
+    'Road',
+    'Water',
+    'Waste Management',
+    'Electricity',
+    'Street Lighting',
+    'Drainage & Sewage',
+    'Pollution',
+    'Public Safety',
+    'Public Transport',
+    'Public Infrastructure',
+    'Other'
+  ],
     required: true,
+  },
+
+  priority:{
+    type:String,
+    enum:[
+      'Low',
+      'Medium',
+      'High'
+    ],
+    default: 'Low',
+  },
+
+   summary:{
+    type:String,
+    trim : true,
   },
 
   imageUrl: {
@@ -52,6 +76,8 @@ const complaintSchema = new mongoose.Schema({
     enum: ['New', 'In Progress', 'Resolved'],
     default: 'New',
   },
+
+ 
 
   // 🧠 Crowd validation: users who upvoted this complaint
   upvotes: [

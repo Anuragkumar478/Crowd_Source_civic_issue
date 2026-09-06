@@ -1,3 +1,4 @@
+import axios from "axios"
 import Complaint from '../models/Complaint.js';
 import { v2 as cloudinary } from "cloudinary";
 import streamifier from "streamifier";
@@ -10,13 +11,58 @@ import fs from 'fs';
 
 export const createComplaint = async (req, res) => {
   try {
-    
-    const { city, state, address, category, latitude, longitude } = req.body;
+    console.log("🔥 CREATE COMPLAINT CONTROLLER CALLED");
+    const { city, state, address, description, latitude, longitude } = req.body;
+
+    console.log("REQ.BODY:", req.body);
+
+console.log({
+  city,
+  state,
+  address,
+  description,
+  latitude,
+  longitude
+});
     
     // ✅ Validation
-    if (!city || !state || !address || !category) {
-      return res.status(400).json({ message: 'All fields are required.' });
-    }
+    // if (!city || !state || !address || !description) {
+    //   return res.status(400).json({ message: 'All fields are required.' });
+    // }
+    if (!city) {
+  return res.status(400).json({
+    message: "City is required."
+  });
+}
+
+if (!state) {
+  return res.status(400).json({
+    message: "State is required."
+  });
+}
+
+if (!address) {
+  return res.status(400).json({
+    message: "Address is required."
+  });
+}
+
+if (!description) {
+  return res.status(400).json({
+    message: "Description is required."
+  });
+}
+
+    const aiResponse = await axios.post(
+            "http://127.0.0.1:8000/analyze",
+            {
+                description: description
+            }
+        );
+
+          
+
+
 
     let imageUrl = '';
     
@@ -41,7 +87,10 @@ export const createComplaint = async (req, res) => {
             city,
             state,
             address,
-            category,
+            description,
+            category:aiResponse.data.category,
+            priority:aiResponse.data.priority,
+            summary:aiResponse.data.summary,
             imageUrl,
             location: {
               latitude: latitude ? parseFloat(latitude) : undefined,
@@ -64,11 +113,14 @@ export const createComplaint = async (req, res) => {
     } else {
       // ✅ If no image, create complaint normally
       const complaint = await Complaint.create({
-        user: req.user._id,
-        city,
-        state,
-        address,
-        category,
+         user: req.user._id,
+            city,
+            state,
+            address,
+            description,
+            category:aiResponse.data.category,
+            priority:aiResponse.data.priority,
+            summary:aiResponse.data.summary,
         location: {
           latitude: latitude ? parseFloat(latitude) : undefined,
           longitude: longitude ? parseFloat(longitude) : undefined,

@@ -6,15 +6,19 @@ import L from "leaflet";
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
+
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
 export default function AddComplaint() {
   const [form, setForm] = useState({
-    category: "",
+    description: "",
     city: "",
     state: "",
     address: "",
@@ -27,24 +31,31 @@ export default function AddComplaint() {
   const [preview, setPreview] = useState("");
   const [message, setMessage] = useState("");
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
-  // ✅ Handle input change
+  // Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+
+    setForm({
+      ...form,
+      [name]: value,
+    });
   };
 
-  // ✅ Handle image upload
+  // Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
       setImage(file);
       setPreview(URL.createObjectURL(file));
     }
   };
 
-  // ✅ Auto-detect location
+  // Auto-detect location
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
       alert("Geolocation not supported by your browser.");
@@ -52,6 +63,7 @@ export default function AddComplaint() {
     }
 
     setLoadingLocation(true);
+
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         setForm({
@@ -60,6 +72,7 @@ export default function AddComplaint() {
           longitude: pos.coords.longitude,
           locationType: "auto",
         });
+
         setLoadingLocation(false);
       },
       () => {
@@ -69,62 +82,85 @@ export default function AddComplaint() {
     );
   };
 
-  // ✅ Submit form
+  // Submit complaint
   const handleSubmit = async (e) => {
     e.preventDefault();
+  console.log("🔥 SUBMIT BUTTON CLICKED");
     try {
-      const formData = new FormData();
-      Object.keys(form).forEach((key) => {
-        if (form[key]) formData.append(key, form[key]);
-      });
-      if (image) formData.append("image", image);
+      setLoading(true);
+      setMessage("");
 
-      const { data } = await api.post("/complaints/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const formData = new FormData();
+
+      Object.keys(form).forEach((key) => {
+        if (form[key]) {
+          formData.append(key, form[key]);
+        }
       });
+
+      if (image) {
+        formData.append("image", image);
+      }
+
+      const { data } = await api.post(
+        "/complaints/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       setMessage(data.message);
-      setTimeout(() => navigate("/my-complaints"), 1000);
+
+      setTimeout(() => {
+        navigate("/my-complaints");
+      }, 1000);
+
     } catch (error) {
-       console.log(error.response);
-      setMessage(error.response?.data?.message || "Failed to submit complaint.");
+      console.log(error.response);
+
+      setMessage(
+        error.response?.data?.message ||
+          "Failed to submit complaint."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-10 bg-white shadow-lg rounded-lg p-6">
-      <h2 className="text-2xl font-semibold text-center mb-4">Submit Complaint</h2>
-     {message && (
-  <p
-    className={`text-center text-sm mb-3 ${
-      message.toLowerCase().includes("failed") ||
-      message.toLowerCase().includes("error")
-        ? "text-red-600"
-        : "text-green-600"
-    }`}
-  >
-    {message}
-  </p>
-)}
+
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        Submit Complaint
+      </h2>
+
+      {message && (
+        <p
+          className={`text-center text-sm mb-3 ${
+            message.toLowerCase().includes("failed") ||
+            message.toLowerCase().includes("error")
+              ? "text-red-600"
+              : "text-green-600"
+          }`}
+        >
+          {message}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* 🟣 Category Selection */}
-        <select
-          name="category"
-          value={form.category}
+
+        {/* 🧠 Complaint Description */}
+        <textarea
+          name="description"
+          placeholder="Describe your complaint..."
+          value={form.description}
           onChange={handleChange}
-          className="w-full border rounded p-2"
+          className="w-full border rounded p-2 min-h-32"
           required
-        >
-          <option value="">Select Category</option>
-          <option value="Road">Road </option>
-          <option value="Water">Water</option>
-          <option value="Waste">Waste</option>
-          <option value="Electricity">Electricity</option>
-          <option value="Pollution">Pollution</option>
-          <option value="Public Saftey">Public Saftey</option>
-          <option value="Other">Other</option>
-        </select>
+        />
 
         {/* City */}
         <input
@@ -160,15 +196,24 @@ export default function AddComplaint() {
 
         {/* 📍 Location Tagging */}
         <div className="space-y-2">
-          <label className="block font-medium">📍 Location Tagging</label>
+
+          <label className="block font-medium">
+            📍 Location Tagging
+          </label>
+
           <select
             name="locationType"
             value={form.locationType}
             onChange={handleChange}
             className="w-full border rounded p-2"
           >
-            <option value="manual">Manual Entry</option>
-            <option value="auto">Auto Detect</option>
+            <option value="manual">
+              Manual Entry
+            </option>
+
+            <option value="auto">
+              Auto Detect
+            </option>
           </select>
 
           {form.locationType === "auto" ? (
@@ -178,10 +223,13 @@ export default function AddComplaint() {
               disabled={loadingLocation}
               className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
             >
-              {loadingLocation ? "Detecting..." : "Detect My Location"}
+              {loadingLocation
+                ? "Detecting..."
+                : "Detect My Location"}
             </button>
           ) : (
             <div className="flex gap-2">
+
               <input
                 type="number"
                 name="latitude"
@@ -190,6 +238,7 @@ export default function AddComplaint() {
                 onChange={handleChange}
                 className="w-1/2 border rounded p-2"
               />
+
               <input
                 type="number"
                 name="longitude"
@@ -198,6 +247,7 @@ export default function AddComplaint() {
                 onChange={handleChange}
                 className="w-1/2 border rounded p-2"
               />
+
             </div>
           )}
         </div>
@@ -205,19 +255,37 @@ export default function AddComplaint() {
         {/* 🗺️ Map Preview */}
         {form.latitude && form.longitude && (
           <div className="mt-4 h-64 w-full rounded overflow-hidden">
+
             <MapContainer
-              center={[form.latitude, form.longitude]}
+              center={[
+                Number(form.latitude),
+                Number(form.longitude),
+              ]}
               zoom={15}
-              style={{ height: "100%", width: "100%" }}
+              style={{
+                height: "100%",
+                width: "100%",
+              }}
             >
+
               <TileLayer
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
               />
-              <Marker position={[form.latitude, form.longitude]}>
-                <Popup>Your reported location</Popup>
+
+              <Marker
+                position={[
+                  Number(form.latitude),
+                  Number(form.longitude),
+                ]}
+              >
+                <Popup>
+                  Your reported location
+                </Popup>
               </Marker>
+
             </MapContainer>
+
           </div>
         )}
 
@@ -240,10 +308,14 @@ export default function AddComplaint() {
         {/* 🚀 Submit */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:opacity-50"
         >
-          Submit Complaint
+          {loading
+            ? "Analyzing & Submitting..."
+            : "Submit Complaint"}
         </button>
+
       </form>
     </div>
   );
